@@ -61,15 +61,30 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      <div className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-40 z-10"></div>
+        
+        {/* Content */}
+        <div className="relative z-20 text-center text-white max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
             Fresh Food Delivered
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-primary-100">
+          <p className="text-xl md:text-2xl mb-8 drop-shadow-md">
             Your one-stop shop for fresh, organic, and healthy food products
           </p>
-          <button className="bg-white text-primary-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+          <button className="bg-white text-primary-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
             Shop Now
           </button>
         </div>
@@ -105,7 +120,7 @@ export default function Home() {
             </div>
           ) : error ? (
             <div className="text-center py-12">
-              <p className="text-red-600 text-lg">{error}</p>
+              <p className="text-black text-lg">{error}</p>
               <button
                 onClick={fetchProducts}
                 className="mt-4 btn-primary"

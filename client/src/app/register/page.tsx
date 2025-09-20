@@ -153,7 +153,7 @@ export default function Register() {
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
+              <div className="text-black text-sm text-center bg-gray-50 p-3 rounded-md">
                 {error}
               </div>
             )}

@@ -55,7 +55,7 @@ export default function Blogs() {
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <p className="text-red-600 text-lg">{error}</p>
+            <p className="text-black text-lg">{error}</p>
             <button
               onClick={fetchBlogs}
               className="mt-4 btn-primary"

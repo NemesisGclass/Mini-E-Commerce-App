@@ -8,6 +8,31 @@ router.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username, email, and password are required'
+      });
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address'
+      });
+    }
+    
     // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
@@ -26,7 +51,8 @@ router.post('/register', async (req, res) => {
       data: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
   } catch (error) {
@@ -43,10 +69,20 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({
         success: false,
         message: 'Email and password are required'
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address'
       });
     }
 
@@ -70,7 +106,8 @@ router.post('/login', async (req, res) => {
       { 
         id: user._id,
         email: user.email,
-        username: user.username
+        username: user.username,
+        role: user.role
       }, 
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
@@ -84,7 +121,8 @@ router.post('/login', async (req, res) => {
         user: {
           id: user._id,
           username: user.username,
-          email: user.email
+          email: user.email,
+          role: user.role
         }
       }
     });

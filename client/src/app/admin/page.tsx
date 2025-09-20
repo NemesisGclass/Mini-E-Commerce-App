@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { productsAPI, blogsAPI } from '@/lib/api';
 import { Product, Blog } from '@/types';
 import { Edit, Trash2, Plus, Package, FileText } from 'lucide-react';
+import ProductForm from '@/components/ProductForm';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<'products' | 'blogs'>('products');
@@ -13,7 +14,10 @@ export default function Admin() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const [isProductFormOpen, setIsProductFormOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formLoading, setFormLoading] = useState(false);
+  const { isAuthenticated, user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -22,10 +26,16 @@ export default function Admin() {
       return;
     }
     
-    if (isAuthenticated) {
+    // Check if user is admin
+    if (!authLoading && isAuthenticated && user?.role !== 'admin') {
+      router.push('/');
+      return;
+    }
+    
+    if (isAuthenticated && user?.role === 'admin') {
       fetchData();
     }
-  }, [isAuthenticated, authLoading]);
+  }, [isAuthenticated, authLoading, user]);
 
   const fetchData = async () => {
     try {
@@ -69,6 +79,44 @@ export default function Admin() {
     }
   };
 
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setIsProductFormOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsProductFormOpen(true);
+  };
+
+  const handleSaveProduct = async (productData: any) => {
+    try {
+      setFormLoading(true);
+      
+      if (editingProduct) {
+        // Update existing product
+        const updatedProduct = await productsAPI.update(editingProduct._id, productData);
+        setProducts(products.map(p => p._id === editingProduct._id ? updatedProduct.data : p));
+      } else {
+        // Create new product
+        const newProduct = await productsAPI.create(productData);
+        setProducts([...products, newProduct.data]);
+      }
+      
+      setIsProductFormOpen(false);
+      setEditingProduct(null);
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to save product');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleCloseProductForm = () => {
+    setIsProductFormOpen(false);
+    setEditingProduct(null);
+  };
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -84,8 +132,8 @@ export default function Admin() {
     );
   }
 
-  if (!isAuthenticated) {
-    return null; // Will redirect to login
+  if (!isAuthenticated || user?.role !== 'admin') {
+    return null; // Will redirect to login or home
   }
 
   return (
@@ -122,8 +170,8 @@ export default function Admin() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-            <p className="text-red-600">{error}</p>
+          <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-6">
+            <p className="text-black">{error}</p>
           </div>
         )}
 
@@ -132,7 +180,10 @@ export default function Admin() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">Products</h2>
-              <button className="btn-primary flex items-center">
+              <button 
+                onClick={handleAddProduct}
+                className="btn-primary flex items-center"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Add New Product
               </button>
@@ -192,13 +243,16 @@ export default function Admin() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <button className="text-blue-600 hover:text-blue-800 flex items-center">
+                          <button 
+                            onClick={() => handleEditProduct(product)}
+                            className="text-black hover:text-gray-800 flex items-center"
+                          >
                             <Edit className="w-4 h-4 mr-1" />
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product._id)}
-                            className="text-red-600 hover:text-red-800 flex items-center"
+                            className="text-black hover:text-gray-800 flex items-center"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Delete
@@ -271,8 +325,8 @@ export default function Admin() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 rounded-full text-xs ${
                           blog.published 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-gray-100 text-gray-800' 
+                            : 'bg-gray-100 text-gray-800'
                         }`}>
                           {blog.published ? 'Published' : 'Draft'}
                         </span>
@@ -282,13 +336,13 @@ export default function Admin() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
-                          <button className="text-blue-600 hover:text-blue-800 flex items-center">
+                          <button className="text-black hover:text-gray-800 flex items-center">
                             <Edit className="w-4 h-4 mr-1" />
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteBlog(blog._id)}
-                            className="text-red-600 hover:text-red-800 flex items-center"
+                            className="text-black hover:text-gray-800 flex items-center"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Delete
@@ -303,6 +357,15 @@ export default function Admin() {
           </div>
         )}
       </div>
+      
+      {/* Product Form Modal */}
+      <ProductForm
+        product={editingProduct}
+        isOpen={isProductFormOpen}
+        onClose={handleCloseProductForm}
+        onSave={handleSaveProduct}
+        loading={formLoading}
+      />
     </div>
   );
 }

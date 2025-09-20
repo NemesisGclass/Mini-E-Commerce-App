@@ -3,45 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CartItem } from '@/types';
+import { useCart } from '@/contexts/CartContext';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setCartItems(cart);
-    setLoading(false);
-  }, []);
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItem(id);
-      return;
-    }
-
-    const updatedCart = cartItems.map(item =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    );
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
-
-  const removeItem = (id: string) => {
-    const updatedCart = cartItems.filter(item => item.id !== id);
-    setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-    localStorage.removeItem('cart');
-  };
-
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotalPrice } = useCart();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -49,14 +15,6 @@ export default function Cart() {
       currency: 'USD',
     }).format(price);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen py-8">
@@ -123,8 +81,8 @@ export default function Cart() {
                         {formatPrice(item.price * item.quantity)}
                       </p>
                       <button
-                        onClick={() => removeItem(item.id)}
-                        className="text-red-600 hover:text-red-800 text-sm flex items-center"
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-black hover:text-gray-800 text-sm flex items-center"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
                         Remove
@@ -138,7 +96,7 @@ export default function Cart() {
                 <Link href="/" className="btn-secondary">
                   Continue Shopping
                 </Link>
-                <button onClick={clearCart} className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors">
+                <button onClick={clearCart} className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors">
                   Clear Cart
                 </button>
               </div>

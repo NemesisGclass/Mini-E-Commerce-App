@@ -340,66 +340,17 @@ export const blogsAPI = {
 
 export const authAPI = {
   register: async (userData: { username: string; email: string; password: string }): Promise<ApiResponse<User>> => {
-    try {
-      const response = await api.post<ApiResponse<User>>('/auth/register', userData);
-      return response.data;
-    } catch (error) {
-      // Mock registration for development when backend is not available
-      const mockUser: User = {
-        id: Date.now().toString(),
-        username: userData.username,
-        email: userData.email
-      };
-      
-      return {
-        success: true,
-        data: mockUser,
-        message: 'User registered successfully (mock)'
-      };
-    }
+    const response = await api.post<ApiResponse<User>>('/auth/register', userData);
+    return response.data;
   },
   
   login: async (credentials: { email: string; password: string }): Promise<ApiResponse<{ token: string; user: User }>> => {
-    try {
-      const response = await api.post<ApiResponse<{ token: string; user: User }>>('/auth/login', credentials);
-      return response.data;
-    } catch (error) {
-      // Mock login for development when backend is not available
-      const mockUser: User = {
-        id: '1',
-        username: credentials.email.split('@')[0],
-        email: credentials.email
-      };
-      
-      const mockToken = 'mock-jwt-token-' + Date.now();
-      
-      return {
-        success: true,
-        data: {
-          token: mockToken,
-          user: mockUser
-        },
-        message: 'Login successful (mock)'
-      };
-    }
+    const response = await api.post<ApiResponse<{ token: string; user: User }>>('/auth/login', credentials);
+    return response.data;
   },
   
   getProfile: async (): Promise<ApiResponse<User>> => {
-    try {
-      const response = await api.get<ApiResponse<User>>('/auth/profile');
-      return response.data;
-    } catch (error) {
-      // Mock profile for development when backend is not available
-      const mockUser: User = {
-        id: '1',
-        username: 'MockUser',
-        email: 'mock@example.com'
-      };
-      
-      return {
-        success: true,
-        data: mockUser
-      };
-    }
+    const response = await api.get<ApiResponse<User>>('/auth/profile');
+    return response.data;
   },
 };

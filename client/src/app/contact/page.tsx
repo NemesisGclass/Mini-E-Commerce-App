@@ -54,9 +54,9 @@ export default function Contact() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
             
             {submitted ? (
-              <div className="bg-green-50 border border-green-200 rounded-md p-6 text-center">
-                <div className="text-green-600 text-lg font-semibold mb-2">Message Sent!</div>
-                <p className="text-green-700">Thank you for contacting us. We'll get back to you soon.</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-6 text-center">
+                <div className="text-black text-lg font-semibold mb-2">Message Sent!</div>
+                <p className="text-gray-700">Thank you for contacting us. We'll get back to you soon.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">

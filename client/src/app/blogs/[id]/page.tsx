@@ -46,7 +46,7 @@ export default function BlogDetail() {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <div className="text-center">
-          <p className="text-red-600 text-lg mb-4">{error || 'Blog post not found'}</p>
+          <p className="text-black text-lg mb-4">{error || 'Blog post not found'}</p>
           <Link href="/blogs" className="btn-primary">
             Back to Blogs
           </Link>

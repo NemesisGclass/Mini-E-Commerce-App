@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=SUSE+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,13 +7,18 @@
 
 @layer base {
   body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'SUSE Mono', monospace;
+  }
+  
+  /* Apply SUSE Mono to all headings and paragraphs */
+  h1, h2, h3, h4, h5, h6, p {
+    font-family: 'SUSE Mono', monospace;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors font-medium;
+    @apply bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors font-medium;
   }
   
   .btn-secondary {
@@ -24,6 +30,155 @@
   }
   
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black;
+  }
+}
+
+@layer utilities {
+  /* Cart Animation */
+  .animate-fly-to-cart {
+    animation: flyToCart 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  @keyframes flyToCart {
+    0% {
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(calc(-50% + 200px), calc(-50% - 100px)) scale(0.8) rotate(180deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(calc(-50% + 400px), calc(-50% - 200px)) scale(0.3) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Success Notification */
+  .animate-slide-in {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Cart Bounce */
+  .animate-cart-bounce {
+    animation: cartBounce 0.6s ease-in-out;
+  }
+
+  @keyframes cartBounce {
+    0%, 100% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(1.2);
+    }
+    50% {
+      transform: scale(0.9);
+    }
+    75% {
+      transform: scale(1.1);
+    }
+  }
+
+  /* Pulse Effect */
+  .animate-pulse-slow {
+    animation: pulseSlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulseSlow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Mobile Menu Animations */
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out forwards;
+  }
+
+  @keyframes slideDown {
+    0% {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Mobile Cart Slide-in Animation */
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s ease-out forwards;
+  }
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Mobile Cart Slide-out Animation */
+  .animate-slide-out-right {
+    animation: slideOutRight 0.4s ease-in forwards;
+  }
+
+  @keyframes slideOutRight {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Mobile Cart Backdrop Animation */
+  .animate-backdrop-fade {
+    animation: backdropFade 0.4s ease-out forwards;
+  }
+
+  @keyframes backdropFade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 }
