@@ -113,27 +113,38 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
         
         
-        {/* Quick Actions Overlay */}
-        <div className={`absolute inset-0 bg-black/20 flex items-center justify-center gap-2 transition-opacity duration-300 ${
+        {/* Mobile Add to Cart Button - Always Visible */}
+        <div className="absolute top-2 right-2 sm:hidden">
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stockQuantity === 0}
+            className="bg-black text-white p-2 rounded-full disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation shadow-lg"
+          >
+            <ShoppingCart className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Desktop Quick Actions Overlay */}
+        <div className={`absolute inset-0 bg-black/20 flex items-center justify-center gap-2 transition-opacity duration-300 hidden sm:flex ${
           isHovered ? 'opacity-100' : 'opacity-0'
-        } sm:opacity-0 sm:group-hover:opacity-100`}>
+        }`}>
           <button
             onClick={() => setIsQuickViewOpen(true)}
-            className="bg-white text-gray-800 p-2 sm:p-3 rounded-full hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-110 touch-manipulation"
+            className="bg-white text-gray-800 p-3 rounded-full hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-110 touch-manipulation"
           >
-            <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Eye className="w-5 h-5" />
           </button>
           <button
             onClick={handleAddToCart}
             disabled={product.stockQuantity === 0}
-            className="bg-black text-white p-2 sm:p-3 rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+            className="bg-black text-white p-3 rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
           >
-            <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+            <ShoppingCart className="w-5 h-5" />
           </button>
         </div>
         
-        {/* Rating Overlay */}
-        <div className={`absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full transition-all duration-300 ${
+        {/* Rating Overlay - Desktop Only */}
+        <div className={`absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full transition-all duration-300 hidden sm:block ${
           isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         }`}>
           <div className="flex items-center space-x-1">

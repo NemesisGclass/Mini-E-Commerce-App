@@ -4,6 +4,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CartDrawer from "@/components/CartDrawer";
 
 export const metadata: Metadata = {
   title: "FreshMarket - Fresh Food Delivered",
@@ -25,6 +26,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <CartDrawer />
           </CartProvider>
         </AuthProvider>
       </body>

@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CartItem } from '@/types';
 import { useCart } from '@/contexts/CartContext';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowLeft } from 'lucide-react';
+import CartItemComponent from '@/components/CartItem';
+import { ShoppingCart, ArrowLeft } from 'lucide-react';
 
 export default function Cart() {
-  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotalPrice } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, clearCart, getTotalPrice, getSubtotal, getShippingCost } = useCart();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -44,51 +44,12 @@ export default function Cart() {
             <div className="lg:col-span-2">
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="card p-6 flex items-center space-x-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded-md"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://via.placeholder.com/80x80?text=No+Image';
-                      }}
-                    />
-                    
-                    <div className="flex-grow">
-                      <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-                      <p className="text-primary-600 font-medium">{formatPrice(item.price)}</p>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-100"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span className="w-12 text-center font-medium">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-100"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-lg font-semibold text-gray-900">
-                        {formatPrice(item.price * item.quantity)}
-                      </p>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-black hover:text-gray-800 text-sm flex items-center"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Remove
-                      </button>
-                    </div>
-                  </div>
+                  <CartItemComponent
+                    key={item.id}
+                    item={item}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={removeFromCart}
+                  />
                 ))}
               </div>
 
@@ -110,11 +71,13 @@ export default function Cart() {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">{formatPrice(getTotalPrice())}</span>
+                    <span className="font-medium">{formatPrice(getSubtotal())}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">Free</span>
+                    <span className="font-medium">
+                      {getShippingCost() === 0 ? 'Free' : formatPrice(getShippingCost())}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
